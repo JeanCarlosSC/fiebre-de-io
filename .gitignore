@@ -1,0 +1,10 @@
+# Intellij idea community edition for a java/kotlin desktop app
+*.class
+*.kotlin_module
+*.jar
+*.MF
+*.iml
+
+*.idea/
+*out/
+*target/
