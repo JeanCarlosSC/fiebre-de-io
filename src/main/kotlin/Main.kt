@@ -1,3 +1,4 @@
+import lib.sRAD.gui.sComponent.SFrame
 import javax.swing.JButton
 import javax.swing.JFrame
 
@@ -11,12 +12,14 @@ class AppController(gui: GUI) {
 
 }
 
-class GUI: JFrame() {
+class GUI: SFrame() {
     init {
         loadComponents()
         loadProperties()
     }
-    fun loadComponents() {
+    private fun loadComponents() {
+        setMainBar("Personal manager")
+
         val btAddConstraint = JButton("Add constraint")
         btAddConstraint.setBounds(32, 32, 128, 32)
         add(btAddConstraint)
@@ -26,10 +29,10 @@ class GUI: JFrame() {
         btShowCalendar.addActionListener { showCalendar() }
         add(btShowCalendar)
     }
-    fun showCalendar() {
+    private fun showCalendar() {
         println(sleepTime)
     }
-    fun loadProperties() {
+    private fun loadProperties() {
         setSize(1280, 720)
         setLocationRelativeTo(null)
         layout = null
