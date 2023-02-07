@@ -1,64 +1,76 @@
-import lib.sRAD.gui.sComponent.SFrame
-import javax.swing.JButton
-import javax.swing.JFrame
-
-val sleepTime = Event(Hour(21, 35), Hour(9, 15), "sleep")
-
 fun main() {
-    AppController(GUI())
+    val appController = AppController()
+
+    appController.addEvent(
+        Event("Investigación de operaciones", Hour(8, 0),Hour(2, 0),
+            Days(monday = true, thursday = true, friday = true))
+    )
+
+    appController.printCalendar()
 }
 
-class AppController(gui: GUI) {
+class AppController {
+    private val events = mutableListOf<Event>()
 
-}
-
-class GUI: SFrame() {
-    init {
-        loadComponents()
-        loadProperties()
+    fun addEvent(event: Event) {
+        events.add(event)
     }
-    private fun loadComponents() {
-        setMainBar("Personal manager")
 
-        val btAddConstraint = JButton("Add constraint")
-        btAddConstraint.setBounds(32, 32, 128, 32)
-        add(btAddConstraint)
-
-        val btShowCalendar = JButton("Show calendar")
-        btShowCalendar.setBounds(192, 32, 128, 32)
-        btShowCalendar.addActionListener { showCalendar() }
-        add(btShowCalendar)
-    }
-    private fun showCalendar() {
-        println(sleepTime)
-    }
-    private fun loadProperties() {
-        setSize(1280, 720)
-        setLocationRelativeTo(null)
-        layout = null
-        defaultCloseOperation = EXIT_ON_CLOSE
-        isVisible = true
+    fun printCalendar() {
+        val days = listOf("sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday")
+        for (day in days) {
+            println("- - $day - -")
+            for (event in events) {
+                if(event.days.isActive(day)) {
+                    println(event)
+                }
+            }
+            println()
+        }
     }
 }
 
-class Event(val startTime: Hour, val duration: Hour, val name: String) {
+class Event(val name: String, val startTime: Hour, private val duration: Hour, val days: Days) {
     override fun toString(): String {
-        return "$name ($startTime - ${startTime.plus(duration)})"
+        return "$startTime - ${getEndTime()} $name"
+    }
+    fun getEndTime(): Hour {
+        return startTime.plus(duration)
+    }
+}
+
+class Days(val sunday: Boolean = false, val monday: Boolean = false, val tuesday: Boolean = false,
+           val wednesday: Boolean = false, val thursday: Boolean = false, val friday: Boolean = false,
+           val saturday: Boolean = false) {
+    fun isActive(day: String): Boolean {
+        if(day == "sunday") {
+            return sunday
+        }
+        if(day == "monday") {
+            return monday
+        }
+        if(day == "tuesday") {
+            return tuesday
+        }
+        if(day == "wednesday") {
+            return wednesday
+        }
+        if(day == "thursday") {
+            return thursday
+        }
+        if(day == "friday") {
+            return friday
+        }
+        if (day == "saturday") {
+            return saturday
+        }
+        return false
     }
 }
 
 class Hour(var hour: Int, var minutes: Int) {
-    init {
-        while(minutes > 59) {
-            minutes -= 60
-            hour++
-        }
-        while(hour > 23) {
-            hour -= 24
-        }
-    }
     override fun toString(): String {
-        return "$hour:$minutes"
+        return String.format("%02d:%02d", hour, minutes)
     }
 }
 fun Hour.plus(duration: Hour): Hour {
